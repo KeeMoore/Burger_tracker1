@@ -31,11 +31,20 @@ public class BurgerService {
     }
 
     // updates a burger
-    public Burger updateBurger (Burger burger) {
-        return burgerRepository.save(burger);
+    public Burger updateBurger (Long id, Burger burger) {
+        Optional<Burger> optionalBurger = this.burgerRepository.findById(id);
+        if (optionalBurger.isPresent()) {
+            Burger burgerToUpdate = optionalBurger.get();
+            burgerToUpdate.setBurgerName(burger.getBurgerName());
+            burgerToUpdate.setRestaurantName(burger.getRestaurantName());
+            burgerToUpdate.setRating(burger.getRating());
+            burgerToUpdate.setNotes(burger.getNotes());
+            return burgerRepository.save(burgerToUpdate);
+        }
+        return null;
     }
 
-    public Burger findBurger(Long id) {
+    public Burger findBurgerById(Long id) {
         Optional<Burger> optionalBurger = burgerRepository.findById(id);
         if(optionalBurger.isPresent()) {
             return optionalBurger.get();
@@ -43,5 +52,6 @@ public class BurgerService {
             return null;
         }
     }
+
 
 }

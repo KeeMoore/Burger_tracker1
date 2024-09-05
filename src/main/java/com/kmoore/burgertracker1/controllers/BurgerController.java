@@ -7,9 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class BurgerController {
@@ -44,6 +42,30 @@ public class BurgerController {
         System.out.println("Adding burger: " + burger); // Debug statement
         burgerService.createBurger(burger);
         return "redirect:/";
+    }
+
+    @GetMapping("/burgers/edit/{id}")
+    public String editBurger(@PathVariable("id") Long id, Model model) {
+        Burger burger = burgerService.findBurgerById(id);
+        model.addAttribute("burger", burger);
+        return "edit.jsp";
+    }
+
+    @PostMapping("/burgers/update/{id}")
+    public String updateBurger(@PathVariable("id") Long id, @Valid @ModelAttribute("burger") Burger burger, BindingResult result, Model model) {
+        if (result.hasErrors()) {
+            return "edit.jsp";
+        }
+        burgerService.updateBurger(id, burger);
+        return "redirect:/";
+    }
+    @PutMapping("/burgers/update/{id}")
+    public String updateBurger(@Valid @ModelAttribute Burger burger, @PathVariable(value = "id") Long id,  BindingResult result, ch.qos.logback.core.model.Model model) {
+        if (result.hasErrors()) {
+            return "edit.jsp";
+        }
+        this.burgerService.updateBurger(id, burger);
+        return "redirect:/burgers";
     }
 }
 
